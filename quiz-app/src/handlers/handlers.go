@@ -3,8 +3,9 @@ package handlers
 import (
 	"fmt"
 	"net/http"
+	"quiz-app/src/csvServices"
 	"quiz-app/src/models"
-	"regexp"
+	"quiz-app/src/validations"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -13,7 +14,7 @@ import (
 func GetQuestions(c *gin.Context) {
 	responseQuestions := make([]models.GetQuestionsReponse, len(models.QuizQuestions))
 	for i, q := range models.QuizQuestions {
-		responseQuestions[i] = q.ToResponseQuestion()
+		responseQuestions[i] = q.ToGetQuestionsResponse()
 	}
 	c.IndentedJSON(http.StatusOK, responseQuestions)
 }
@@ -25,7 +26,7 @@ func PostAnswers(c *gin.Context) {
 		return
 	}
 
-	if err := ValidateRequest(c, receivedAnswers); err != nil {
+	if err := validations.ValidateRequest(c, receivedAnswers); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -47,17 +48,17 @@ func PostAnswers(c *gin.Context) {
 	}
 
 	models.Players = append(models.Players, playerInfo)
-	allPlayers, err := models.ReadScoresCsv()
+	allPlayers, err := csvServices.ReadScoresCsv()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error reading players from CSV"})
 		return
 	}
 
-	position := models.CalculateTopScorePercentage(scorePercentage, allPlayers)
+	position := csvServices.CalculateTopScorePercentage(scorePercentage, allPlayers)
 
 	positionToString := fmt.Sprintf("%.2f", position)
 
-	if err := models.UpdateScoresCsv(); err != nil {
+	if err := csvServices.UpdateScoresCsv(); err != nil {
 		errorMessage := fmt.Sprintf("Error: '%s'", err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"error": errorMessage})
 		return
@@ -65,19 +66,4 @@ func PostAnswers(c *gin.Context) {
 
 	resultMessage := fmt.Sprintf("Correct answers: %s%%. You were better than %s%% of all quizzers", scoreToString, positionToString)
 	c.JSON(http.StatusOK, resultMessage)
-}
-
-func ValidateRequest(c *gin.Context, answers []string) error {
-	if len(answers) != len(models.QuizQuestions) {
-		return fmt.Errorf("The answer array must have the same length as the questions")
-	}
-
-	regex := regexp.MustCompile("[^a-zA-Z]")
-	for _, answer := range answers {
-		if match := regex.FindString(answer); match != "" {
-			return fmt.Errorf("Answer '%s' contains non-alphabetical characters", answer)
-		}
-	}
-
-	return nil
 }
