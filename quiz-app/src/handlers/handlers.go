@@ -47,21 +47,21 @@ func PostAnswers(c *gin.Context) {
 	}
 
 	models.Players = append(models.Players, playerInfo)
+	allPlayers, err := models.ReadScoresCsv()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error reading players from CSV"})
+		return
+	}
+
+	position := models.CalculateTopScorePercentage(scorePercentage, allPlayers)
+
+	positionToString := fmt.Sprintf("%.2f", position)
 
 	if err := models.UpdateScoresCsv(); err != nil {
 		errorMessage := fmt.Sprintf("Error: '%s'", err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"error": errorMessage})
 		return
 	}
-
-	allPlayers, err := models.ReadScoresCsv()
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error reading players from CSV"})
-		return
-	}
-	position := models.CalculateTopScorePercentage(scorePercentage, allPlayers)
-
-	positionToString := fmt.Sprintf("%.2f", position)
 
 	resultMessage := fmt.Sprintf("Correct answers: %s%%. You were better than %s%% of all quizzers", scoreToString, positionToString)
 	c.JSON(http.StatusOK, resultMessage)
