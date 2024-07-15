@@ -1,0 +1,68 @@
+{
+	"info": {
+		"_postman_id": "58295be3-9593-43a8-a1d6-5d3dbf17edf1",
+		"name": "FastTrack_TechnicalAssessment",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GET /questions",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/questions",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"questions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST /answers",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[\r\n    \"b\",\r\n    \"c\",\r\n    \"a\",\r\n    \"b\",\r\n    \"c\"\r\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/answers",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"answers"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

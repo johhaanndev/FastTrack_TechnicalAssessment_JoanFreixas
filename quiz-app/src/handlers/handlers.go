@@ -54,9 +54,11 @@ func PostAnswers(c *gin.Context) {
 		return
 	}
 
-	position := csvServices.CalculateTopScorePercentage(scorePercentage, allPlayers)
-
-	positionToString := fmt.Sprintf("%.2f", position)
+	topPercent := csvServices.CalculateTopScorePercentage(scorePercentage, allPlayers)
+	if scorePercentage == 0.0 {
+		topPercent = 0.0
+	}
+	topPercentToString := fmt.Sprintf("%.2f", topPercent)
 
 	if err := csvServices.UpdateScoresCsv(); err != nil {
 		errorMessage := fmt.Sprintf("Error: '%s'", err.Error())
@@ -64,6 +66,6 @@ func PostAnswers(c *gin.Context) {
 		return
 	}
 
-	resultMessage := fmt.Sprintf("Correct answers: %s%%. You were better than %s%% of all quizzers", scoreToString, positionToString)
+	resultMessage := fmt.Sprintf("Correct answers: %s%%. You were better than %s%% of all quizzers", scoreToString, topPercentToString)
 	c.JSON(http.StatusOK, resultMessage)
 }
