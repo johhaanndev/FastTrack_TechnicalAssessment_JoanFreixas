@@ -50,12 +50,13 @@ After the first request, a new entry with ID and the score will be added to the 
 - GET /questions: curl -i -X GET http://localhost:8080/questions
 - POST /answers: curl -i -X POST http://localhost:8080/answers -H "Content-Type: application/json" -d "[ \"b\", \"c\", \"a\", \"b\", \"c\" ]"
 ## Postman
+You can test on your postman by downloading the collection under [quiz-app/postman](https://github.com/johhaanndev/FastTrack_TechnicalAssessment_JoanFreixas/tree/master/quiz-app/postman), it contains the two endpoints ready to be run after executing the api.
 - GET /questions:
   ![image](https://github.com/user-attachments/assets/4bba77f2-6db2-4f91-9d5a-14b5cc11ddcb)
 - POST /answers:
   ![image](https://github.com/user-attachments/assets/77e02a26-712b-4e1b-8b1d-fe3e4d56d6e1)
 
-### Results
+## Results
 - GET /questions: 200, 404, 500
 ![image](https://github.com/user-attachments/assets/af89dda5-22fc-4173-a5b4-6a9f6d706032)
 - POST /answers: 200, 404, 400, 500
